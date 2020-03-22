@@ -1,26 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+//rce helps in creating class component
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import React, { Component } from 'react';
+import Navbar from './components/layout/Navbar'
+import Users from './components/users/Users'
+import axios from 'axios'
+import './App.css'
+
+class App extends Component {
+  state = {
+    loading : false,
+    users : []
+  }
+
+  async componentDidMount() {
+    this.setState({loading : true})
+    const res = await axios('https://api.github.com/users')
+    this.setState({users : res.data , loading:false })
+    
+  }
+
+  render() {
+    return (
+      <div className='App'>
+        <Navbar title="Github Finder" icon="fab fa-github"/> 
+        <div className="container">
+          <Users loading={this.state.loading} users={this.state.users} />
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;
