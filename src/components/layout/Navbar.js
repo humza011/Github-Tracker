@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 
 const Navbar = props => {
     return (
-        <nav className="navbar bg-primary">
+        <nav className="navbar bg-dark">
             <h1>
                 <i className={props.icon}></i>
                 {props.title}
