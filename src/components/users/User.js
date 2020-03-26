@@ -1,23 +1,19 @@
-import React, { Component, Fragment } from 'react'
+import React, { useEffect, Fragment } from 'react'
 import Spinner from '../layout/Spinner'
 import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
 
-export class User extends Component {
-    componentDidMount() {
-        this.props.getUser(this.props.match.params.login)
-        console.log(this.props.user)
-    }
+const User = ( {user , loading , getUser , match} ) =>  {
 
-    static propTypes = {
-        loading : PropTypes.bool,
-        user : PropTypes.object.isRequired,
-        getUser : PropTypes.func.isRequired,
-    }
+    useEffect(() => {
+        getUser(match.params.login)
+    }, []);
 
-    render() {
-
-         const {
+    // componentDidMount() {
+    //     this.props.getUser(match.params.login)
+    //     console.log(this.props.user)
+    // }
+    const {
              name,
              avatar_url,
              location,
@@ -27,9 +23,7 @@ export class User extends Component {
              following,
              blog,
              company
-         } = this.props.user;
-
-        const {loading} = this.props;
+         } = user;
 
         if(loading) return (
             <Spinner />
@@ -57,7 +51,12 @@ export class User extends Component {
 
             </Fragment>
         )
-    }
+}
+
+User.propTypes = {
+    loading : PropTypes.bool,
+    user : PropTypes.object.isRequired,
+    getUser : PropTypes.func.isRequired,
 }
 
 export default User
