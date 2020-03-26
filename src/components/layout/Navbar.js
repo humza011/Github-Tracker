@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom'
 
 const Navbar = props => {
     return (
-        <nav className="navbar bg-dark">
+        <nav className="navbar bg-dark ">
             <h1>
                 <i className={props.icon}></i>
                 {props.title}
@@ -23,7 +23,7 @@ const Navbar = props => {
 
 Navbar.defaultProps = {
     title:"Github Finder",
-    icon:"fab fa-github"
+    icon:"fab fa-github",
 }
 
 Navbar.propTypes = {
