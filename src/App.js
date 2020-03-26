@@ -1,6 +1,6 @@
 //rce helps in creating class component
 
-import React, { Component , Fragment} from 'react';
+import React, { useState , Fragment} from 'react';
 import {BrowserRouter as Router, Switch , Route} from 'react-router-dom'
 import Navbar from './components/layout/Navbar'
 import Users from './components/users/Users'
@@ -11,70 +11,74 @@ import About from './components/pages/About'
 import axios from 'axios'
 import './App.css'
 
-class App extends Component {
-  state = {
-    loading : false,
-    user : {},
-    users : [],
-    alert :null
-  }
+const App  = () => {
 
-  async componentDidMount() {
-    this.setState({loading : true})
-    const res = await axios(`https://api.github.com/users?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`)
-    this.setState({users : res.data , loading:false })
-  }
+  const [users, setUsers] = useState([])
+  const [user, setUser] = useState({}) 
+  const [alert, setAlert] = useState(null)
+  const [loading, setLoading] = useState(false) 
+  
 
-  searchUser = async (text) => {
-    this.setState({loading : true})
+  // state = {
+  //   loading : false,
+  //   user : {},
+  //   users : [],
+  //   alert :null
+  // }
+
+  const searchUser = async (text) => {
+     setLoading(true)
     const res = await axios(`https://api.github.com/search/users?q=${text}&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`)  
-    //console.log(res)
-    this.setState({users : res.data.items , loading:false })
+    setUsers(res.data.items)
+    setLoading(false)
+    // this.setState({users : res.data.items , loading:false })
   }
 
-  getUser = async (username) => {
-    this.setState({loading : true})
+  const getUser = async (username) => {
+    //this.setState({loading : true})
+    setLoading(true)
     const res = await axios(`https://api.github.com/users/${username}?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`)  
-    console.log(res.data)
-    this.setState({user : res.data , loading:false }) 
+    setLoading(false)
+    setUser(res.data)
+    //this.setState({user : res.data , loading:false }) 
   }
 
-  clearUser = () => { this.setState({users:[] , loading : false})}
+  const clearUser = () => { 
+    setUsers([])
+    setLoading(false)
+    //this.setState({users:[] , loading : false})
+  }
 
-  setAlert = (msg , type) => {
-    this.setState({alert : {msg : msg, type : type}})
+  const showAlert = (msg , type) => {
+    setAlert({msg, type})
 
     setTimeout(() => {
-      this.setState({alert : null})
+      setAlert(null)
     }, 5000);
   } 
-
-  render() {
-
-    const {users, user , loading} = this.state;
-
+  
     return (
       <Router>
       <div className='App'>
         <Navbar title="Github Finder" icon="fab fa-github"/> 
         <div className="container">
-          <Alert alert={this.state.alert}/>
+          <Alert alert={alert}/>
           <Switch>
             <Route exact path ='/' 
             render={ props => (
               <Fragment>
                 <Search 
-                searchUser={this.searchUser} 
-                clearUser ={this.clearUser} 
+                searchUser={searchUser} 
+                clearUser ={clearUser} 
                 showClear = {users.length > 0 ? true : false}
-                setAlert = {this.setAlert}
+                setAlert = {showAlert}
                 />
                 <Users loading={loading} users={users} />
               </Fragment>
             )} />
             <Route exact path='/about' component={About} />
             <Route exact path='/user/:login' render= { props => (
-              <User {...props}  getUser={this.getUser} user={user}  loading={loading}/>
+              <User {...props}  getUser={getUser} user={user}  loading={loading}/>
             )}>
 
             </Route>
@@ -83,7 +87,6 @@ class App extends Component {
       </div>
       </Router>
     );
-  }
 }
 
 export default App;

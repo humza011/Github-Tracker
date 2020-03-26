@@ -4,9 +4,10 @@ import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
 
 const User = ( {user , loading , getUser , match} ) =>  {
-
+    
     useEffect(() => {
         getUser(match.params.login)
+        //eslint-disable-next-line
     }, []);
 
     // componentDidMount() {
